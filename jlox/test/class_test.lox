@@ -1,0 +1,158 @@
+class BankAccount {
+    init(accountNumber, owner, balance) {
+        this.accountNumber = accountNumber;
+        this.owner = owner;
+        this.balance = balance;
+        this.transactions = 0;
+    }
+
+    deposit(amount) {
+        this.balance = this.balance + amount;
+        this.transactions = this.transactions + 1;
+        print "Deposited:";
+        print amount;
+        return this.balance;
+    }
+
+    withdraw(amount) {
+        if (this.balance >= amount) {
+            this.balance = this.balance - amount;
+            this.transactions = this.transactions + 1;
+            print "Withdrawn:";
+            print amount;
+            return true;
+        } else {
+            print "Insufficient funds";
+            return false;
+        }
+    }
+
+    getBalance() {
+        return this.balance;
+    }
+
+    showInfo() {
+        print "Account Number:";
+        print this.accountNumber;
+        print "Owner:";
+        print this.owner;
+        print "Balance:";
+        print this.balance;
+        print "Total Transactions:";
+        print this.transactions;
+    }
+}
+
+// Derived class: SavingsAccount with interest
+class SavingsAccount < BankAccount {
+    init(accountNumber, owner, balance, interestRate) {
+        super.init(accountNumber, owner, balance);
+        this.interestRate = interestRate;
+    }
+
+    addInterest() {
+        var interest = this.balance * this.interestRate / 100;
+        print "Interest earned:";
+        print interest;
+        this.balance = this.balance + interest;
+        this.transactions = this.transactions + 1;
+        return interest;
+    }
+
+    showInfo() {
+        super.showInfo();
+        print "Interest Rate:";
+        print this.interestRate;
+    }
+}
+
+// Derived class: CheckingAccount with fees
+class CheckingAccount < BankAccount {
+    init(accountNumber, owner, balance) {
+        super.init(accountNumber, owner, balance);
+        this.fee = 2;
+    }
+
+    withdraw(amount) {
+        var totalAmount = amount + this.fee;
+        print "Withdrawal fee:";
+        print this.fee;
+
+        if (this.balance >= totalAmount) {
+            this.balance = this.balance - totalAmount;
+            this.transactions = this.transactions + 1;
+            print "Total withdrawn:";
+            print totalAmount;
+            return true;
+        } else {
+            print "Insufficient funds for withdrawal and fee";
+            return false;
+        }
+    }
+
+    showInfo() {
+        super.showInfo();
+        print "Transaction Fee:";
+        print this.fee;
+    }
+}
+
+// Start the banking simulation
+print "=== Banking System Demo ===";
+
+// Create a basic account
+print "Creating Basic Account...";
+var basicAccount = BankAccount(1001, "John", 1000);
+basicAccount.showInfo();
+
+print "Depositing 500...";
+basicAccount.deposit(500);
+print "New balance:";
+print basicAccount.getBalance();
+
+print "Withdrawing 200...";
+basicAccount.withdraw(200);
+print "New balance:";
+print basicAccount.getBalance();
+
+print "---";
+
+// Create a savings account
+print "Creating Savings Account...";
+var savingsAccount = SavingsAccount(2001, "Alice", 5000, 5);
+savingsAccount.showInfo();
+
+print "Depositing 1000...";
+savingsAccount.deposit(1000);
+
+print "Adding interest...";
+savingsAccount.addInterest();
+print "Balance after interest:";
+print savingsAccount.getBalance();
+
+print "---";
+
+// Create a checking account
+print "Creating Checking Account...";
+var checkingAccount = CheckingAccount(3001, "Bob", 800);
+checkingAccount.showInfo();
+
+print "Depositing 200...";
+checkingAccount.deposit(200);
+
+print "Withdrawing 100 (with fee)...";
+checkingAccount.withdraw(100);
+print "Final balance:";
+print checkingAccount.getBalance();
+
+print "---";
+
+// Test insufficient funds
+print "Testing insufficient funds...";
+var smallAccount = BankAccount(4001, "Charlie", 50);
+print "Account balance:";
+print smallAccount.getBalance();
+print "Attempting to withdraw 100...";
+smallAccount.withdraw(100);
+
+print "=== Banking Demo Complete ===";

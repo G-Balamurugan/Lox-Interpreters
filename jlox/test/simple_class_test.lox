@@ -1,0 +1,68 @@
+// SIMPLE CLASS TEST
+// Quick test for basic class features
+
+print "=== Simple Class Test ===";
+
+// Basic class
+class Cake {
+    init(flavor) {
+        this.flavor = flavor;
+    }
+    
+    taste() {
+        print "Mmm, delicious " + this.flavor + "!";
+    }
+}
+
+var cake = Cake("chocolate");
+cake.taste();
+
+// Inheritance example
+class Animal {
+    init(name) {
+        this.name = name;
+    }
+    
+    speak() {
+        print this.name + " makes a sound.";
+    }
+}
+
+class Dog < Animal {
+    speak() {
+        print this.name + " barks!";
+    }
+}
+
+class Cat < Animal {
+    speak() {
+        print this.name + " meows!";
+    }
+}
+
+var dog = Dog("Rex");
+dog.speak();
+
+var cat = Cat("Mittens");
+cat.speak();
+
+// Using super
+class Parent {
+    method() {
+        print "Parent method";
+    }
+}
+
+class Child < Parent {
+    method() {
+        print "Child method";
+        super.method();
+    }
+}
+
+var child = Child();
+child.method();
+
+print "=== Test Complete ===";
+
+

@@ -1,0 +1,186 @@
+// RESOLVER TEST FILE
+// This file tests various scope resolution and semantic analysis scenarios
+
+print "=== TEST 1: Basic Scope Resolution ===";
+var global = "global";
+{
+    var local = "local";
+    print global;  // Should resolve to global scope
+    print local;   // Should resolve to local scope
+}
+
+print "=== TEST 2: Nested Scopes & Shadowing ===";
+var x = "outer";
+{
+    var x = "middle";
+    {
+        var x = "inner";
+        print x;  // Should print "inner" (resolver finds closest scope)
+    }
+    print x;  // Should print "middle"
+}
+print x;  // Should print "outer"
+
+print "=== TEST 3: Closures ===";
+// Functions that capture variables from outer scopes
+fun makeCounter() {
+    var count = 0;
+    fun increment() {
+        count = count + 1;
+        return count;
+    }
+    return increment;
+}
+
+var counter = makeCounter();
+print counter();  // 1 - resolver ensures closure captures 'count'
+print counter();  // 2
+print counter();  // 3
+
+print "=== TEST 4: Multiple Closures ===";
+fun outer() {
+    var x = "outside";
+    
+    fun inner() {
+        print x;  // Resolver ensures this references outer's x
+    }
+    
+    return inner;
+}
+
+var closure = outer();
+closure();  // Should print "outside"
+
+print "=== TEST 5: Nested Functions ===";
+fun a() {
+    var varA = "a";
+    
+    fun b() {
+        var varB = "b";
+        
+        fun c() {
+            var varC = "c";
+            print varA;  // Resolver traces back 2 scopes
+            print varB;  // Resolver traces back 1 scope
+            print varC;  // Resolver finds in current scope
+        }
+        
+        c();
+    }
+    
+    b();
+}
+
+a();
+
+print "=== TEST 6: Variable Resolution with Same Names ===";
+var a = "global a";
+var b = "global b";
+
+{
+    fun showA() {
+        print a;  // Should use global a
+    }
+    
+    fun showB() {
+        print b;  // Should use global b
+    }
+    
+    showA();
+    var a = "local a";  // Shadows global a in this block
+    print a;  // Should print "local a"
+    showA();  // Should still print "global a" (closure captured before shadow)
+}
+
+print "=== TEST 7: Function Scope ===";
+fun first() {
+    var x = "first";
+    print x;
+}
+
+fun second() {
+    var x = "second";
+    print x;
+}
+
+first();
+second();
+
+print "=== TEST 8: Block Scope ===";
+var value = "before";
+print value;
+
+{
+    var value = "inside";
+    print value;
+}
+
+print value;
+
+print "=== TEST 9: Loop Variable Scope ===";
+for (var i = 0; i < 3; i = i + 1) {
+    var loopVar = i;
+    print loopVar;
+}
+
+print "=== TEST 10: Conditional Scope ===";
+var condition = true;
+if (condition) {
+    var insideIf = "if scope";
+    print insideIf;
+} else {
+    var insideElse = "else scope";
+    print insideElse;
+}
+
+print "=== TEST 11: Proper Variable Capture ===";
+fun makeFunctions() {
+    var functions = nil;  // Would be an array in full implementation
+    
+    fun f1() {
+        var x = 1;
+        return x;
+    }
+    
+    fun f2() {
+        var x = 2;
+        return x;
+    }
+    
+    print f1();
+    print f2();
+}
+
+makeFunctions();
+
+print "=== TEST 12: Complex Closure Scenario ===";
+fun makeMultiplier(factor) {
+    fun multiply(n) {
+        return factor * n;  // Resolver ensures 'factor' is captured
+    }
+    return multiply;
+}
+
+var timesTwo = makeMultiplier(2);
+var timesThree = makeMultiplier(3);
+
+print timesTwo(5);    // Should be 10
+print timesThree(5);  // Should be 15
+
+print "=== RESOLVER TESTS COMPLETE ===";
+
+// THESE WOULD CAUSE RESOLVER ERRORS (commented out):
+
+// ERROR 1: Reading variable in its own initializer
+// var bad = bad;  // Error: Can't read local variable in its own initializer
+
+// ERROR 2: Duplicate variable in same scope
+// {
+//     var duplicate = "first";
+//     var duplicate = "second";  // Error: Already variable with this name in this scope
+// }
+
+// ERROR 3: Return from top-level
+// return "can't do this";  // Error: Can't return from top-level code
+
+
