@@ -223,5 +223,3 @@ dog.speak();  // Rex barks!
 - See individual README files in `jlox/` and `clox/` for implementation details
 
 ---
-
-**Happy Coding!**
